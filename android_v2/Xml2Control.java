@@ -219,13 +219,23 @@ public class Xml2Control
 
 	    int width = Integer.parseInt(node.getAttribute("Width"));
 	    int height = Integer.parseInt(node.getAttribute("Height"));
+
+	    //--------------------------------------------------
+	    //缩放适应屏幕//应当放在对齐之前
+	    Activity activity = (Activity)control.getContext();
+	    left = (int)Functions.dp2px(left, activity);
+	    top = (int)Functions.dp2px(top, activity);
+	    width = (int)Functions.dp2px(width, activity);
+	    height = (int)Functions.dp2px(height, activity);
+
 	    
 	    
 	    //------------------------
 	    //如果有以右边为准的值则要再计算//类似于 delphi 的 Anchors,不过是每个方向都存储值
 	    //UIView * parent = control.superview;
 	    ////CGRect rect_p = parent.frame; //父控件的大小
-	    Rect rect_p = new Rect(parent.getLeft(), parent.getTop(), parent.getRight(), parent.getBottom()); //父控件的大小
+	    ////Rect rect_p = new Rect(parent.getLeft(), parent.getTop(), parent.getRight(), parent.getBottom()); //父控件的大小//还是传进来比较好,因为控件可能还未布局完成
+	    Rect rect_p = rectParent;
 
 	    String anchor_right = node.getAttribute("anchor_right");
 	    String anchor_left = node.getAttribute("anchor_left");
@@ -272,12 +282,12 @@ public class Xml2Control
 	    //------------------------
 	    //control.frame = rect;
 	    
-	    //缩放适应屏幕
-	    Activity activity = (Activity)control.getContext();
-	    left = (int)Functions.dp2px(left, activity);
-	    top = (int)Functions.dp2px(top, activity);
-	    width = (int)Functions.dp2px(width, activity);
-	    height = (int)Functions.dp2px(height, activity);
+	    //缩放适应屏幕//应当放在对齐之前
+//	    Activity activity = (Activity)control.getContext();
+//	    left = (int)Functions.dp2px(left, activity);
+//	    top = (int)Functions.dp2px(top, activity);
+//	    width = (int)Functions.dp2px(width, activity);
+//	    height = (int)Functions.dp2px(height, activity);
 	    
 	    Functions.SetControlFrame(control, left, top, width, height);
 	    

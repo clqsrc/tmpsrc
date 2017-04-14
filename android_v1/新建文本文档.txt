@@ -1,0 +1,100 @@
+package com.sister;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+import android.widget.*;
+import android.view.*;
+
+public class FormAdd extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_form_add);
+		
+		//--------------------------------------------------
+		NewData();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.form_add, menu);
+		
+		
+		return true;
+	}//
+	
+	public void ShowData()
+	{
+		((EditText)this.findViewById(R.id.create_time_fa)).setText(AppFunctions.DateTimeToStr());
+		
+	}//
+	
+	public String id_guid = "";
+	public void NewData()
+	{
+		this.id_guid = java.util.UUID.randomUUID().toString();
+		ShowData();
+		
+	}//	
+	
+	public void onBtnAddClick(View v)
+	{
+		
+		SaveRec();
+	}//
+	
+	public void SaveRec()
+	{
+		 HttpThreadControl http = new HttpThreadControl();
+	        
+	        http.httpEvent = new HttpThreadControlEvent()
+	        {
+	        	@Override
+	        	public void OnHttpData(HttpThreadControl httpThread) 
+	        	{
+
+	        		Functions.ShowMessage(httpThread.response, FormAdd.this);
+	        		
+	        		//œ‘ æ¡–±Ì
+	        		//MainActivity.this.ShowListForm();
+	        		//ShowData_list(httpThread, FormList.this);
+	        		FormAdd.this.finish();
+	        	}//
+	        	        	
+	        @Override
+	        	public void OnHttpError(HttpThreadControl httpThread) {}
+	    	};
+	    	
+	    	//--------------------------------------------------	
+			
+			//EnableLogin(False);
+			
+			String url = AppFunctions.GBaseUrl + "t.php";//
+			
+			String pd = AppFunctions.GetUserPostData();
+			
+			pd = pd + "action=add" + "&";
+
+
+			pd = pd + "name1="  + Functions.HttpEncode(((EditText)this.findViewById(R.id.name1_fa)).getText().toString())  + "&";
+			pd = pd + "money1="  + ((EditText)this.findViewById(R.id.money1_fa)).getText()  + "&";
+
+			
+			pd = pd + "in1="  + (in1)  + "&";
+			pd = pd + "type1="  + Functions.HttpEncode(((EditText)this.findViewById(R.id.type1_fa)).getText().toString())  + "&";
+			pd = pd + "create_time="  + ((EditText)this.findViewById(R.id.create_time_fa)).getText() + "&";
+			
+
+			pd = pd + "id_guid="  + (id_guid)  + "&";
+
+
+			//--------------------------------------------------
+			
+			http.Post(url, pd);
+		
+	}//
+
+}//
